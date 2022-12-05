@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 
 import logo from './logo.svg';
-import './App.css';
+import './App.scss';
+
+import { VStack, IconButton, Box, Heading, useColorMode } from '@chakra-ui/react';
+import { FaSun, FaMoon } from "react-icons/fa";
 
 
 function App() {
@@ -19,24 +22,20 @@ function App() {
     getMessage();
   }, []);
 
+  const {colorMode, toggleColorMode} = useColorMode();
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>{message}</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <VStack p='4'>
+      <IconButton icon={colorMode === 'light' ? <FaSun /> : <FaMoon />} isRound='true' size='lg' alignSelf='flex-end' onClick={toggleColorMode} />
+      <Box>
+        <Heading className="header" >Task Manager</Heading>
+        {/* <Heading className="header" mb='8' fontWeight='extrabold' size='2xl' bgGradient='linear(to-r, cyan.400, purple.400, pink.400)' bgClip='text'>Todo Application</Heading> */}
+      </Box>
+      <p>{message}</p>
+    </VStack>
     </div>
+    
   );
 }
 
