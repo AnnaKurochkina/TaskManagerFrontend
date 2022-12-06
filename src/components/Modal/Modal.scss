@@ -1,0 +1,40 @@
+// .modalHeader {
+//     height: 5rem;
+//     width: 5rem;
+//     // font-size: larger;
+// }
+
+// .modal {
+//     z-index: 10000000 !important;
+// }
+
+
+
+
+.modal {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    background-color: hwb(0 0% 100% / 0.20);
+    &__content {
+        position: fixed;
+        width: 60vw;
+        top: 11.9rem;
+        padding: 1.25rem;
+        background: grey;
+        border-radius: 0.5rem;
+    }
+    &__heading {
+        font-weight: 400;
+        font-size: 2rem;
+        color: blue;
+    }
+    &__image {
+        position: absolute;
+        left: 93%;
+        top: 30%;
+    }
+}
