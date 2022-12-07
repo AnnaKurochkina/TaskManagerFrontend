@@ -19,7 +19,7 @@ const TaskList = (props) => {
 
 	useEffect(() => {
 		getTaskList();
-	}, []);
+	}, [listId]);
 
 	if (taskList == null) {
 		return <div>Loading...</div>
@@ -28,7 +28,7 @@ const TaskList = (props) => {
 		<div className="list">
 			<Heading>{taskList.name}</Heading>
 			<VStack divider = {<StackDivider />} borderColor='gray.200' borderWidth='2px' spacing={4} align='stretch' w="80%" borderRadius={"1rem"} className="">
-				{taskList.taskItems.map(taskItem => <TaskItem taskItem={taskItem}></TaskItem>)}
+				{taskList.taskItems.map(taskItem => <TaskItem key={taskItem.id} taskItem={taskItem}></TaskItem>)}
 			</VStack>
 			<form>
 				<HStack mt='8'>
