@@ -1,43 +1,86 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { VStack, HStack, StackDivider, Input, Button, Heading } from "@chakra-ui/react";
+import {
+    VStack,
+    HStack,
+    StackDivider,
+    Input,
+    Button,
+    Heading,
+    useDisclosure,
+} from "@chakra-ui/react";
+import { FaPlus } from "react-icons/fa";
 import TaskItem from "../TaskItem/TaskItem";
+import TaskItemModal from "../TaskItemModal/TaskItemModal";
 import "./TaskList.scss";
 
 const TaskList = (props) => {
+    const { listId } = useParams();
 
-	const { listId } = useParams();
+    const [taskList, setTaskList] = useState(null);
 
-	const [taskList, setTaskList] = useState(null);
+    const modal = useDisclosure();
+    const modalRef = React.useRef();
 
-	const getTaskList = async () => {
-		const url = `http://localhost:8080/lists/${listId}`;
-		const res = await fetch(url);
-		const data = await res.json();
-		setTaskList(data);
-	};
+    const addTaskItem = (newTaskItem) => {
+		taskList.taskItems.push(newTaskItem);
+		setTaskList(taskList);
+    };
 
-	useEffect(() => {
-		getTaskList();
-	}, [listId]);
+    const removeTaskItem = (id) => {
+		taskList.taskItems = taskList.taskItems.filter(taskItem => taskItem.id != id);
+		setTaskList(taskList);
+    };
 
-	if (taskList == null) {
-		return <div>Loading...</div>
-	}
+    const getTaskList = async () => {
+        const url = `http://localhost:8080/lists/${listId}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        setTaskList(data);
+    };
+
+    useEffect(() => {
+        getTaskList();
+    }, [listId]);
+
+    if (taskList == null) {
+        return <div>Loading...</div>;
+    }
     return (
-		<div className="list">
-			<Heading>{taskList.name}</Heading>
-			<VStack divider = {<StackDivider />} borderColor='gray.200' borderWidth='2px' spacing={4} align='stretch' w="80%" borderRadius={"1rem"} className="">
-				{taskList.taskItems.map(taskItem => <TaskItem key={taskItem.id} taskItem={taskItem}></TaskItem>)}
-			</VStack>
-			<form>
+        <div className="list">
+            <Heading>{taskList.name}</Heading>
+            <VStack
+                divider={<StackDivider />}
+                borderColor="gray.200"
+                borderWidth="2px"
+                spacing={4}
+                align="stretch"
+                w="80%"
+                borderRadius={"1rem"}
+            >
+                {taskList.taskItems.map((taskItem) => (
+                    <TaskItem key={taskItem.id} taskItem={taskItem} removeTaskItem={removeTaskItem} taskListId={taskList.id}></TaskItem>
+                ))}
+            </VStack>
+            <Button ref={modalRef} onClick={modal.onOpen}>
+                {<FaPlus />} Add task{" "}
+            </Button>
+            {/* <IconButton icon={<FaPlusSquare/>} isRound='true'/> */}
+            <TaskItemModal
+                addTaskItem={addTaskItem}
+                isOpen={modal.isOpen}
+                onClose={modal.onClose}
+                finalRef={modalRef}
+				taskListId={taskList.id}
+            />
+            {/* <form>
 				<HStack mt='8'>
 					<Input variant='filled' placeholder='Add new task'  />
 					<Button type='submit' colorScheme='cyan' px='8'>Add Task</Button>
 				</HStack>
-			</form>
-		</div>
+			</form> */}
+        </div>
     );
-}
+};
 
 export default TaskList;
