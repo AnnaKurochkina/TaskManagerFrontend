@@ -18,6 +18,7 @@ const TaskList = (props) => {
     const { listId } = useParams();
 
     const [taskList, setTaskList] = useState(null);
+	const [stateFlag, setStateFlag] = useState(false);
 
     const modal = useDisclosure();
     const modalRef = React.useRef();
@@ -30,6 +31,7 @@ const TaskList = (props) => {
     const removeTaskItem = (id) => {
 		taskList.taskItems = taskList.taskItems.filter(taskItem => taskItem.id != id);
 		setTaskList(taskList);
+		setStateFlag(!stateFlag);
     };
 
     const getTaskList = async () => {
