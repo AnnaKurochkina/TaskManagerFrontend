@@ -9,7 +9,6 @@ import {
     IconButton,
     useDisclosure,
     useColorMode,
-    Modal,
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import { FaSun, FaMoon, FaBars, FaPlus } from "react-icons/fa";

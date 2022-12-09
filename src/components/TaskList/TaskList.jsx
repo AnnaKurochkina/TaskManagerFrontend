@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
     VStack,
-    HStack,
     StackDivider,
-    Input,
     Button,
     Heading,
     useDisclosure,
@@ -18,7 +16,6 @@ const TaskList = (props) => {
     const { listId } = useParams();
 
     const [taskList, setTaskList] = useState(null);
-	const [stateFlag, setStateFlag] = useState(false);
 
     const modal = useDisclosure();
     const modalRef = React.useRef();
@@ -31,7 +28,6 @@ const TaskList = (props) => {
     const removeTaskItem = (id) => {
 		taskList.taskItems = taskList.taskItems.filter(taskItem => taskItem.id != id);
 		setTaskList(taskList);
-		setStateFlag(!stateFlag);
     };
 
     const getTaskList = async () => {
@@ -43,7 +39,7 @@ const TaskList = (props) => {
 
     useEffect(() => {
         getTaskList();
-    }, [listId]);
+    }, [listId, taskList]);
 
     if (taskList == null) {
         return <div>Loading...</div>;
@@ -75,12 +71,6 @@ const TaskList = (props) => {
                 finalRef={modalRef}
 				taskListId={taskList.id}
             />
-            {/* <form>
-				<HStack mt='8'>
-					<Input variant='filled' placeholder='Add new task'  />
-					<Button type='submit' colorScheme='cyan' px='8'>Add Task</Button>
-				</HStack>
-			</form> */}
         </div>
     );
 };

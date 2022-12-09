@@ -30,7 +30,7 @@ const TaskItem = ({ taskItem, removeTaskItem, taskListId }) => {
         <HStack h="3rem" padding={"2rem"}>
             <Text>{taskItem.name}</Text>
             <Spacer />
-            <IconButton icon={<FaArrowDown />} isRound="true" />
+            <IconButton icon={<FaArrowDown />} isRound="true"/>
             <IconButton icon={<FaArrowUp />} isRound="true" />
             <IconButton
                 icon={<FaTrash />}
