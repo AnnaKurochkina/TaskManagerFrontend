@@ -3,23 +3,29 @@ import React from "react";
 import { HStack, Spacer, IconButton, useDisclosure } from "@chakra-ui/react";
 import { FaArrowDown, FaArrowUp, FaTrash, FaEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import JsonFetchHeaders from "../../ApiUtils";
 import TaskListModal from "../TaskListModal/TaskListModal";
+import { deleteTaskList, updateTaskList } from "../../ApiUtils"
 
-const MenuItem = ({ taskList, removeTaskList, closeDrawer }) => {
+const MenuItem = ({ taskList, removeTaskList, toggleArchived, closeDrawer }) => {
     const modal = useDisclosure();
     const modalRef = React.useRef();
 
     const handleDeleteTaskList = async () => {
-        const result = await fetch(
-            `http://localhost:8080/lists/${taskList.id}`,
-            {
-                method: "DELETE",
-                headers: JsonFetchHeaders,
-            }
-        );
+        await deleteTaskList(taskList.id);
         removeTaskList(taskList.id);
     };
+
+	const handleArchiveTaskList = async () => {
+		taskList.archived = true;
+		await updateTaskList(taskList.id, taskList);
+		toggleArchived(taskList);
+	}
+
+	const handleUnarchiveTaskList = async () => {
+		taskList.archived = false;
+		await updateTaskList(taskList.id, taskList);
+		toggleArchived(taskList);
+	}
 
     return (
         <HStack h="3rem" className="menu-item">
@@ -30,11 +36,13 @@ const MenuItem = ({ taskList, removeTaskList, closeDrawer }) => {
                     icon={<FaArrowDown />}
                     isRound="true"
                     title="Archive"
+					onClick={handleArchiveTaskList}
                 />
                 <IconButton
                     icon={<FaArrowUp />}
                     isRound="true"
                     title="Unarchive"
+					onClick={handleUnarchiveTaskList}
                 />
                 <IconButton
                     icon={<FaTrash />}

@@ -9,11 +9,14 @@ import {
     IconButton,
     useDisclosure,
     useColorMode,
+	HStack,
+	VStack
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
-import { FaSun, FaMoon, FaBars, FaPlus } from "react-icons/fa";
+import { FaSun, FaMoon, FaBars, FaPlus, FaArrowDown } from "react-icons/fa";
 import MenuItem from "../MenuItem/MenuItem";
 import TaskListModal from "../TaskListModal/TaskListModal";
+import { getAllTaskLists } from "../../ApiUtils";
 import "./Nav.scss";
 
 const Nav = () => {
@@ -23,14 +26,16 @@ const Nav = () => {
     const menuRef = React.useRef();
     const modalRef = React.useRef();
 
-    const [taskLists, setTaskLists] = useState([]);
 
-    const getTaskLists = async () => {
-        const url = `http://localhost:8080/lists`;
-        const res = await fetch(url);
-        const data = await res.json();
+    const [taskLists, setTaskLists] = useState([]);
+	const [showArchived, setShowArchived] = useState(false);
+
+	const getTaskLists = async () => {
+		const data = await getAllTaskLists()
         setTaskLists(data);
     };
+
+	const filteredTaskLists = taskLists.filter(taskList => taskList.archived == showArchived);
 
     const addTaskList = (newTaskList) => {
         const updated = [...taskLists, newTaskList];
@@ -42,9 +47,17 @@ const Nav = () => {
         setTaskLists(updated);
     };
 
+	const toggleArchived = () => {
+        setShowArchived(!showArchived);
+    };
+
     useEffect(() => {
         getTaskLists();
     }, []);
+
+	// useEffect(() => {
+    //     getTaskLists();
+    // }, [taskLists]);
 
     return (
         <>
@@ -77,7 +90,7 @@ const Nav = () => {
                         />
                     </DrawerHeader>
                     <DrawerBody>
-                        {taskLists.map((taskList) => (
+                        {filteredTaskLists.map((taskList) => (
                             <MenuItem
                                 key={taskList.id}
                                 taskList={taskList}
@@ -85,7 +98,9 @@ const Nav = () => {
 								closeDrawer={drawer.onClose}
                             ></MenuItem>
                         ))}
-                        <Button ref={modalRef} onClick={modal.onOpen}>
+
+						<HStack>
+						<Button ref={modalRef} onClick={modal.onOpen}>
                             {<FaPlus />} Add list{" "}
                         </Button>
                         {/* <IconButton icon={<FaPlusSquare/>} isRound='true'/> */}
@@ -95,6 +110,12 @@ const Nav = () => {
                             onClose={modal.onClose}
 							finalRef={modalRef}
                         />
+						<Button onClick={toggleArchived}>
+                            {<FaArrowDown />} 
+							{showArchived ? "Hide archived" : "Show archived"}
+                        </Button>
+						</HStack>
+                        
                     </DrawerBody>
                 </DrawerContent>
             </Drawer>

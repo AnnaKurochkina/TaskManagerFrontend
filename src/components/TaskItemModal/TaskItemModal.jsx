@@ -14,7 +14,7 @@ import {
     FormErrorMessage
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
-import JsonFetchHeaders from "../../ApiUtils";
+import { updateTaskItem, createTaskItem } from "../../ApiUtils";
 
 import "./TaskItemModal.scss";
 
@@ -32,24 +32,13 @@ const TaskItemModal = ({
         await new Promise((r) => setTimeout(r, 250));
 
         let result;
-        if (existingTaskItem) {
-            result = await fetch(
-                `http://localhost:8080/items/${existingTaskItem.id}`,
-                {
-                    method: "PUT",
-                    headers: JsonFetchHeaders,
-                    body: JSON.stringify(taskItem),
-                }
-            );
+
+		if (existingTaskItem) {
+            await updateTaskItem(existingTaskItem.id, taskItem);
             existingTaskItem.name = taskItem.name;
         } else {
-            result = await fetch(`http://localhost:8080/lists/${taskListId}`, {
-                method: "POST",
-                headers: JsonFetchHeaders,
-                body: JSON.stringify(taskItem),
-            });
-            const newTaskItem = await result.json();
-            addTaskItem(newTaskItem);
+            result = await createTaskItem(taskListId, taskItem);
+            addTaskItem(result);
         }
 
         actions.setSubmitting(false);

@@ -6,40 +6,53 @@ import {
     Button,
     Heading,
     useDisclosure,
+	HStack,
 } from "@chakra-ui/react";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaArrowDown } from "react-icons/fa";
 import TaskItem from "../TaskItem/TaskItem";
 import TaskItemModal from "../TaskItemModal/TaskItemModal";
+import { getSingleTaskList } from "../../ApiUtils";
 import "./TaskList.scss";
 
 const TaskList = (props) => {
     const { listId } = useParams();
 
     const [taskList, setTaskList] = useState(null);
+	const [showArchivedItem, setShowArchivedItem] = useState(false);
 
     const modal = useDisclosure();
     const modalRef = React.useRef();
 
     const addTaskItem = (newTaskItem) => {
-		taskList.taskItems.push(newTaskItem);
-		setTaskList(taskList);
+        taskList.taskItems.push(newTaskItem);
+        setTaskList(taskList);
     };
 
     const removeTaskItem = (id) => {
-		taskList.taskItems = taskList.taskItems.filter(taskItem => taskItem.id != id);
-		setTaskList(taskList);
+        taskList.taskItems = taskList.taskItems.filter(
+            (taskItem) => taskItem.id != id
+        );
+        setTaskList(taskList);
     };
 
     const getTaskList = async () => {
-        const url = `http://localhost:8080/lists/${listId}`;
-        const res = await fetch(url);
-        const data = await res.json();
+        const data = await getSingleTaskList(listId);
         setTaskList(data);
+    };
+
+	const filteredTaskItems = taskList.taskItems.filter(taskItem => taskItem.archived == showArchivedItem);
+
+	const toggleArchivedItem = () => {
+        setShowArchivedItem(!showArchivedItem);
     };
 
     useEffect(() => {
         getTaskList();
-    }, [listId, taskList]);
+    }, [listId]);
+
+	// useEffect(() => {
+    //     getTaskList();
+    // }, [listId, taskList]);
 
     if (taskList == null) {
         return <div>Loading...</div>;
@@ -56,10 +69,16 @@ const TaskList = (props) => {
                 w="80%"
                 borderRadius={"1rem"}
             >
-                {taskList.taskItems.map((taskItem) => (
-                    <TaskItem key={taskItem.id} taskItem={taskItem} removeTaskItem={removeTaskItem} taskListId={taskList.id}></TaskItem>
+                {filteredTaskItems.map((taskItem) => (
+                    <TaskItem
+                        key={taskItem.id}
+                        taskItem={taskItem}
+                        removeTaskItem={removeTaskItem}
+                        taskListId={taskList.id}
+                    ></TaskItem>
                 ))}
             </VStack>
+			<HStack>
             <Button ref={modalRef} onClick={modal.onOpen}>
                 {<FaPlus />} Add task{" "}
             </Button>
@@ -69,8 +88,13 @@ const TaskList = (props) => {
                 isOpen={modal.isOpen}
                 onClose={modal.onClose}
                 finalRef={modalRef}
-				taskListId={taskList.id}
+                taskListId={taskList.id}
             />
+            <Button onClick={toggleArchivedItem}>
+                {<FaArrowDown />}{" "}
+                {showArchivedItem ? "Hide archived" : "Show archived"}
+            </Button>
+			</HStack>
         </div>
     );
 };
