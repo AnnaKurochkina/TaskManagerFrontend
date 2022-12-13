@@ -19,6 +19,7 @@ const TaskList = (props) => {
 
     const [taskList, setTaskList] = useState(null);
 	const [showArchivedItem, setShowArchivedItem] = useState(false);
+	const [flag, setFlag] = useState();
 
     const modal = useDisclosure();
     const modalRef = React.useRef();
