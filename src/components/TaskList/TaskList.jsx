@@ -8,23 +8,32 @@ import {
     useDisclosure,
 	HStack,
 } from "@chakra-ui/react";
-import { FaPlus, FaArrowDown } from "react-icons/fa";
+import { FaPlus, FaArrowDown, FaRecycle, FaFolder, FaEyeSlash } from "react-icons/fa";
 import TaskItem from "../TaskItem/TaskItem";
 import TaskItemModal from "../TaskItemModal/TaskItemModal";
 import { getSingleTaskList } from "../../ApiUtils";
 import "./TaskList.scss";
 
-const TaskList = (props) => {
+const TaskList = () => {
     const { listId } = useParams();
 
     const [taskList, setTaskList] = useState(null);
-	const [showArchivedItem, setShowArchivedItem] = useState(false);
-	const [flag, setFlag] = useState();
+	const [showArchived, setShowArchived] = useState(false);
+	const [stateFlag, setStateFlag] = useState(false);
 
     const modal = useDisclosure();
     const modalRef = React.useRef();
+	
+	useEffect(() => {
+        getTaskList();
+    }, [listId]);
 
-    const addTaskItem = (newTaskItem) => {
+    const getTaskList = async () => {
+        const data = await getSingleTaskList(listId);
+        setTaskList(data);
+    };
+
+	const addTaskItem = (newTaskItem) => {
         taskList.taskItems.push(newTaskItem);
         setTaskList(taskList);
     };
@@ -34,30 +43,21 @@ const TaskList = (props) => {
             (taskItem) => taskItem.id != id
         );
         setTaskList(taskList);
+		setStateFlag(!stateFlag);
     };
 
-    const getTaskList = async () => {
-        const data = await getSingleTaskList(listId);
-        setTaskList(data);
+	const toggleArchived = () => {
+        setShowArchived(!showArchived);
     };
 
-	const filteredTaskItems = taskList.taskItems.filter(taskItem => taskItem.archived == showArchivedItem);
-
-	const toggleArchivedItem = () => {
-        setShowArchivedItem(!showArchivedItem);
-    };
-
-    useEffect(() => {
-        getTaskList();
-    }, [listId]);
-
-	// useEffect(() => {
-    //     getTaskList();
-    // }, [listId, taskList]);
+	const refreshView = () => setStateFlag(!stateFlag);
 
     if (taskList == null) {
         return <div>Loading...</div>;
     }
+
+	const filteredTaskItems = taskList.taskItems.filter(taskItem => taskItem.archived == showArchived);
+
     return (
         <div className="list">
             <Heading>{taskList.name}</Heading>
@@ -76,14 +76,14 @@ const TaskList = (props) => {
                         taskItem={taskItem}
                         removeTaskItem={removeTaskItem}
                         taskListId={taskList.id}
+						refreshView={refreshView}
                     ></TaskItem>
                 ))}
             </VStack>
 			<HStack>
-            <Button ref={modalRef} onClick={modal.onOpen}>
-                {<FaPlus />} Add task{" "}
+            <Button ref={modalRef} onClick={modal.onOpen} display={showArchived ? "none" : "flex"}>
+                {<FaPlus />} Add task
             </Button>
-            {/* <IconButton icon={<FaPlusSquare/>} isRound='true'/> */}
             <TaskItemModal
                 addTaskItem={addTaskItem}
                 isOpen={modal.isOpen}
@@ -91,9 +91,9 @@ const TaskList = (props) => {
                 finalRef={modalRef}
                 taskListId={taskList.id}
             />
-            <Button onClick={toggleArchivedItem}>
-                {<FaArrowDown />}{" "}
-                {showArchivedItem ? "Hide archived" : "Show archived"}
+            <Button onClick={toggleArchived}>
+                {showArchived ? <FaEyeSlash/> : <FaFolder/>}
+				{showArchived ? "Hide archived" : "Show archived"}
             </Button>
 			</HStack>
         </div>

@@ -6,13 +6,12 @@ import {
     Text,
     useDisclosure,
 } from "@chakra-ui/react";
-import { FaTrash, FaArrowUp, FaArrowDown, FaEdit } from "react-icons/fa";
+import { FaTrash, FaArrowUp, FaArrowDown, FaEdit, FaFolder, FaRecycle } from "react-icons/fa";
 import TaskItemModal from "../TaskItemModal/TaskItemModal";
-import JsonFetchHeaders from "../../ApiUtils";
 import { deleteTaskItem, updateTaskItem } from "../../ApiUtils";
 import "./TaskItem.scss";
 
-const TaskItem = ({ taskItem, removeTaskItem, taskListId, toggleArchivedItem }) => {
+const TaskItem = ({ taskItem, removeTaskItem, taskListId, refreshView }) => {
     const modal = useDisclosure();
     const modalRef = React.useRef();
 
@@ -21,16 +20,10 @@ const TaskItem = ({ taskItem, removeTaskItem, taskListId, toggleArchivedItem }) 
         removeTaskItem(taskItem.id);
     };
 
-    const handleArchiveTaskItem = async () => {
-        taskItem.archived = true;
+    const setTaskItemArchived = async (archived) => {
+        taskItem.archived = archived;
         await updateTaskItem(taskItem.id, taskItem);
-        toggleArchivedItem(taskItem);
-    };
-
-    const handleUnarchiveTaskItem = async () => {
-        taskItem.archived = false;
-        await updateTaskItem(taskItem.id, taskItem);
-        toggleArchivedItem(taskItem);
+		refreshView();
     };
 
     return (
@@ -38,16 +31,10 @@ const TaskItem = ({ taskItem, removeTaskItem, taskListId, toggleArchivedItem }) 
             <Text>{taskItem.name}</Text>
             <Spacer />
             <IconButton
-                icon={<FaArrowDown />}
+                icon={taskItem.archived ? <FaRecycle /> : <FaFolder />}
                 isRound="true"
-				title="Archive"
-                onClick={handleArchiveTaskItem}
-            />
-            <IconButton
-                icon={<FaArrowUp />}
-                isRound="true"
-				title="Unarchive"
-                onClick={handleUnarchiveTaskItem}
+				title={taskItem.archived ? "Restore" : "Archive"}
+                onClick={() => setTaskItemArchived(!taskItem.archived)}
             />
             <IconButton
                 icon={<FaTrash />}

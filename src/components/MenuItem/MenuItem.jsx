@@ -1,12 +1,12 @@
 import "./MenuItem.scss";
 import React from "react";
 import { HStack, Spacer, IconButton, useDisclosure } from "@chakra-ui/react";
-import { FaArrowDown, FaArrowUp, FaTrash, FaEdit } from "react-icons/fa";
+import { FaArrowDown, FaArrowUp, FaTrash, FaEdit, FaRecycle, FaFolder } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import TaskListModal from "../TaskListModal/TaskListModal";
 import { deleteTaskList, updateTaskList } from "../../ApiUtils"
 
-const MenuItem = ({ taskList, removeTaskList, toggleArchived, closeDrawer }) => {
+const MenuItem = ({ taskList, removeTaskList, refreshView, closeDrawer }) => {
     const modal = useDisclosure();
     const modalRef = React.useRef();
 
@@ -15,16 +15,10 @@ const MenuItem = ({ taskList, removeTaskList, toggleArchived, closeDrawer }) => 
         removeTaskList(taskList.id);
     };
 
-	const handleArchiveTaskList = async () => {
-		taskList.archived = true;
+	const setTaskListArchived = async (archived) => {
+		taskList.archived = archived;
 		await updateTaskList(taskList.id, taskList);
-		toggleArchived(taskList);
-	}
-
-	const handleUnarchiveTaskList = async () => {
-		taskList.archived = false;
-		await updateTaskList(taskList.id, taskList);
-		toggleArchived(taskList);
+		refreshView();
 	}
 
     return (
@@ -33,16 +27,10 @@ const MenuItem = ({ taskList, removeTaskList, toggleArchived, closeDrawer }) => 
             <Spacer />
             <HStack className="menu-item__buttons">
                 <IconButton
-                    icon={<FaArrowDown />}
+                    icon={taskList.archived ? <FaRecycle/> : <FaFolder/>}
                     isRound="true"
-                    title="Archive"
-					onClick={handleArchiveTaskList}
-                />
-                <IconButton
-                    icon={<FaArrowUp />}
-                    isRound="true"
-                    title="Unarchive"
-					onClick={handleUnarchiveTaskList}
+                    title={taskList.archived ? "Restore" : "Archive"}
+					onClick={() => setTaskListArchived(!taskList.archived)}
                 />
                 <IconButton
                     icon={<FaTrash />}

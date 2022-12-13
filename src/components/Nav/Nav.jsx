@@ -9,11 +9,11 @@ import {
     IconButton,
     useDisclosure,
     useColorMode,
-	HStack,
-	VStack
+    HStack,
+    VStack,
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
-import { FaSun, FaMoon, FaBars, FaPlus, FaArrowDown } from "react-icons/fa";
+import { FaSun, FaMoon, FaBars, FaPlus, FaEyeSlash, FaFolder } from "react-icons/fa";
 import MenuItem from "../MenuItem/MenuItem";
 import TaskListModal from "../TaskListModal/TaskListModal";
 import { getAllTaskLists } from "../../ApiUtils";
@@ -26,16 +26,18 @@ const Nav = () => {
     const menuRef = React.useRef();
     const modalRef = React.useRef();
 
-
     const [taskLists, setTaskLists] = useState([]);
-	const [showArchived, setShowArchived] = useState(false);
+    const [showArchived, setShowArchived] = useState(false);
+    const [stateFlag, setStateFlag] = useState(false);
 
-	const getTaskLists = async () => {
-		const data = await getAllTaskLists()
+    useEffect(() => {
+        getTaskLists();
+    }, []);
+
+    const getTaskLists = async () => {
+        const data = await getAllTaskLists();
         setTaskLists(data);
     };
-
-	const filteredTaskLists = taskLists.filter(taskList => taskList.archived == showArchived);
 
     const addTaskList = (newTaskList) => {
         const updated = [...taskLists, newTaskList];
@@ -47,17 +49,15 @@ const Nav = () => {
         setTaskLists(updated);
     };
 
-	const toggleArchived = () => {
+    const toggleArchived = () => {
         setShowArchived(!showArchived);
     };
 
-    useEffect(() => {
-        getTaskLists();
-    }, []);
+    const refreshView = () => setStateFlag(!stateFlag);
 
-	// useEffect(() => {
-    //     getTaskLists();
-    // }, [taskLists]);
+    const filteredTaskLists = taskLists.filter(
+        (taskList) => taskList.archived == showArchived
+    );
 
     return (
         <>
@@ -66,7 +66,7 @@ const Nav = () => {
                 isRound="true"
                 title="Menu"
                 onClick={drawer.onOpen}
-				ref={menuRef}
+                ref={menuRef}
             />
             <Drawer
                 size="lg"
@@ -95,27 +95,27 @@ const Nav = () => {
                                 key={taskList.id}
                                 taskList={taskList}
                                 removeTaskList={removeTaskList}
-								closeDrawer={drawer.onClose}
+                                closeDrawer={drawer.onClose}
+                                refreshView={refreshView}
                             ></MenuItem>
                         ))}
-
-						<HStack>
-						<Button ref={modalRef} onClick={modal.onOpen}>
-                            {<FaPlus />} Add list{" "}
-                        </Button>
-                        {/* <IconButton icon={<FaPlusSquare/>} isRound='true'/> */}
-                        <TaskListModal
-                            addTaskList={addTaskList}
-                            isOpen={modal.isOpen}
-                            onClose={modal.onClose}
-							finalRef={modalRef}
-                        />
-						<Button onClick={toggleArchived}>
-                            {<FaArrowDown />} 
-							{showArchived ? "Hide archived" : "Show archived"}
-                        </Button>
-						</HStack>
-                        
+                        <HStack>
+                            <Button ref={modalRef} onClick={modal.onOpen} display={showArchived ? "none" : "flex"}>
+                                {<FaPlus />} Add list{" "}
+                            </Button>
+                            <TaskListModal
+                                addTaskList={addTaskList}
+                                isOpen={modal.isOpen}
+                                onClose={modal.onClose}
+                                finalRef={modalRef}
+                            />
+                            <Button onClick={toggleArchived}>
+                                {showArchived ? <FaEyeSlash /> : <FaFolder />}
+                                {showArchived
+                                    ? "Hide archived"
+                                    : "Show archived"}
+                            </Button>
+                        </HStack>
                     </DrawerBody>
                 </DrawerContent>
             </Drawer>

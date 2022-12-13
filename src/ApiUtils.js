@@ -78,8 +78,3 @@ export const deleteTaskItem = async (taskItemId) => {
 	);
 }
 
-
-
-
-
-
