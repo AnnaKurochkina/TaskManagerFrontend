@@ -1,0 +1,13 @@
+.home {
+// height: 100vh;
+// align-items: center;
+// justify-content: center;
+
+	&__greeting {
+		flex-direction: column;
+		background-color: purple;
+		color: yellow;
+		padding: 1rem;
+		border-radius: 0.5rem;
+	}
+}

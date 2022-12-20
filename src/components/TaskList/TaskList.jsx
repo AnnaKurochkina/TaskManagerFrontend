@@ -80,9 +80,9 @@ const TaskList = () => {
                     ></TaskItem>
                 ))}
             </VStack>
-			<HStack>
+			<HStack mt={"1rem"}>
             <Button ref={modalRef} onClick={modal.onOpen} display={showArchived ? "none" : "flex"}>
-                {<FaPlus />} Add task
+                {<FaPlus />} <span>Add task</span>
             </Button>
             <TaskItemModal
                 addTaskItem={addTaskItem}
@@ -93,7 +93,9 @@ const TaskList = () => {
             />
             <Button onClick={toggleArchived}>
                 {showArchived ? <FaEyeSlash/> : <FaFolder/>}
+				<span>
 				{showArchived ? "Hide archived" : "Show archived"}
+				</span>
             </Button>
 			</HStack>
         </div>

@@ -6,7 +6,7 @@ import {
     Text,
     useDisclosure,
 } from "@chakra-ui/react";
-import { FaTrash, FaArrowUp, FaArrowDown, FaEdit, FaFolder, FaRecycle } from "react-icons/fa";
+import { FaTrash, FaArrowUp, FaArrowDown, FaEdit, FaFolder, FaRecycle, FaCheckCircle, FaCircle, FaRegCircle, FaCheckSquare, FaRegSquare } from "react-icons/fa";
 import TaskItemModal from "../TaskItemModal/TaskItemModal";
 import { deleteTaskItem, updateTaskItem } from "../../ApiUtils";
 import "./TaskItem.scss";
@@ -26,8 +26,20 @@ const TaskItem = ({ taskItem, removeTaskItem, taskListId, refreshView }) => {
 		refreshView();
     };
 
+	const setTaskItemDone = async (done) => {
+        taskItem.done = done;
+        await updateTaskItem(taskItem.id, taskItem);
+		refreshView();
+    };
+
     return (
         <HStack h="3rem" padding={"2rem"}>
+						<IconButton
+                icon={taskItem.done ? <FaCheckSquare /> : <FaRegSquare />}
+                isRound="true"
+				title={taskItem.done ? "Set not done" : "Set done"}
+                onClick={() => setTaskItemDone(!taskItem.done)}
+            />
             <Text>{taskItem.name}</Text>
             <Spacer />
             <IconButton

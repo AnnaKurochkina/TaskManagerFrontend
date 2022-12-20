@@ -10,10 +10,17 @@ import {
     useDisclosure,
     useColorMode,
     HStack,
-    VStack,
+    useColorModeValue,
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
-import { FaSun, FaMoon, FaBars, FaPlus, FaEyeSlash, FaFolder } from "react-icons/fa";
+import {
+    FaSun,
+    FaMoon,
+    FaBars,
+    FaPlus,
+    FaEyeSlash,
+    FaFolder,
+} from "react-icons/fa";
 import MenuItem from "../MenuItem/MenuItem";
 import TaskListModal from "../TaskListModal/TaskListModal";
 import { getAllTaskLists } from "../../ApiUtils";
@@ -59,6 +66,9 @@ const Nav = () => {
         (taskList) => taskList.archived == showArchived
     );
 
+    // const buttonBg = useColorModeValue("gray.300", "rgba(255, 255, 255, 0.08)");
+    // const iconColor = useColorModeValue("#000057", "#00EDE3");
+
     return (
         <>
             <IconButton
@@ -100,8 +110,13 @@ const Nav = () => {
                             ></MenuItem>
                         ))}
                         <HStack>
-                            <Button ref={modalRef} onClick={modal.onOpen} display={showArchived ? "none" : "flex"}>
-                                {<FaPlus />} Add list{" "}
+                            <Button
+                                ref={modalRef}
+                                onClick={modal.onOpen}
+                                display={showArchived ? "none" : "flex"}
+                                className="span"
+                            >
+                                {<FaPlus />} <span>Add list</span>
                             </Button>
                             <TaskListModal
                                 addTaskList={addTaskList}
@@ -111,9 +126,11 @@ const Nav = () => {
                             />
                             <Button onClick={toggleArchived}>
                                 {showArchived ? <FaEyeSlash /> : <FaFolder />}
-                                {showArchived
-                                    ? "Hide archived"
-                                    : "Show archived"}
+                                <span>
+                                    {showArchived
+                                        ? "Hide archived"
+                                        : "Show archived"}
+                                </span>
                             </Button>
                         </HStack>
                     </DrawerBody>
