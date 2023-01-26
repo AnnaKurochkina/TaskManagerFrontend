@@ -26,6 +26,9 @@ import TaskListModal from "../TaskListModal/TaskListModal";
 import { getAllTaskLists } from "../../ApiUtils";
 import "./Nav.scss";
 
+// import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+// import { Box } from "@chakra-ui/react"
+
 const Nav = () => {
     const { colorMode, toggleColorMode } = useColorMode();
     const drawer = useDisclosure();
@@ -66,11 +69,8 @@ const Nav = () => {
         (taskList) => taskList.archived == showArchived
     );
 
-    // const buttonBg = useColorModeValue("gray.300", "rgba(255, 255, 255, 0.08)");
-    // const iconColor = useColorModeValue("#000057", "#00EDE3");
-
     return (
-        <>
+        <div className="navbar">
             <IconButton
                 icon={<FaBars />}
                 isRound="true"
@@ -81,9 +81,10 @@ const Nav = () => {
             <Drawer
                 size="lg"
                 isOpen={drawer.isOpen}
-                placement="left"
+                placement="top"
                 onClose={drawer.onClose}
                 finalFocusRef={menuRef}
+				color='gray.50'
             >
                 <DrawerOverlay />
                 <DrawerContent>
@@ -136,7 +137,7 @@ const Nav = () => {
                     </DrawerBody>
                 </DrawerContent>
             </Drawer>
-        </>
+        </div>
     );
 };
 

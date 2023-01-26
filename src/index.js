@@ -4,12 +4,21 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-import { ChakraProvider } from '@chakra-ui/react'
+import { ThemeProvider } from '@mui/material/styles';
+import { deepmerge } from '@mui/utils';
+import { createTheme } from '@mui/material/styles';
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+
+const muiTheme = createTheme();
+const chakraTheme = extendTheme();
+
+let theme = deepmerge(chakraTheme, muiTheme);
+// let theme = createTheme(deepmerge(chakraTheme, muiTheme));
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 	<React.StrictMode>
-		<ChakraProvider>
+		<ChakraProvider theme={chakraTheme} resetCSS>
 			<App />
 		</ChakraProvider>
 	</React.StrictMode>

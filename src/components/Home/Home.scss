@@ -4,9 +4,15 @@
 // justify-content: center;
 
 	&__greeting {
+		display: flex;
 		flex-direction: column;
-		background-color: purple;
-		color: yellow;
+		// background-color: purple;
+		// background-image: url("../../Assets/clouds.png");
+		// background-repeat: no-repeat;
+		// background-attachment: fixed;
+		// background-size: 100% 100%;
+		
+		// color: rgb(32, 19, 80);
 		padding: 1rem;
 		border-radius: 0.5rem;
 	}
