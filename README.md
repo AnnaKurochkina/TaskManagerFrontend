@@ -18,3 +18,4 @@ Basic CRUD for lists and task lists is done for both backend and frontend. I am 
 * SASS
 * JavaSpring Boot
 * mySQL Workbench
+* Weather API for dispalying weather forecast and autocomplete search.
