@@ -32,7 +32,7 @@ function App() {
 	return (
 		<div className="app">
 		<Router>
-			{/* <Nav/> */}
+			<Home geoLongitude={longitude} geoLatitude={latitude} />
 			<Suspense fallback={<div>Loading...</div>}>
 				<Routes>
 					<Route path="/" element={<Home geoLongitude={longitude} geoLatitude={latitude}/>} />
@@ -40,7 +40,6 @@ function App() {
 				</Routes>
 			</Suspense>
 		</Router>
-		{/* // <Home geoLongitude={longitude} geoLatitude={latitude} /> */}
 		</div>
 	);	
 }
